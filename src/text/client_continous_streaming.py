@@ -13,7 +13,7 @@ async def receive_messages(websocket):
         print(f"< Received: {response}")
 
 async def client():
-    uri = "ws://localhost:8000"
+    uri = "ws://localhost:8765"
     async with websockets.connect(uri) as websocket:
         # Run both send and receive tasks concurrently
         send_task = asyncio.create_task(send_messages(websocket))
