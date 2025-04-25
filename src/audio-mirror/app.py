@@ -9,7 +9,7 @@ CHANNELS = 1
 DTYPE = 'int16'
 
 async def playback(message):
-    await asyncio.sleep(1)  # 1 second delay before playback
+    await asyncio.sleep(5)  # 1 second delay before playback
 
     # Convert raw bytes to numpy array
     audio_array = np.frombuffer(message, dtype=DTYPE)
