@@ -4,7 +4,7 @@ import numpy as np
 import sounddevice as sd
 
 # Audio settings — adjust if your audio format differs
-SAMPLE_RATE = 44100 * 2  # Hz
+SAMPLE_RATE = 16000  # Hz
 CHANNELS = 1
 DTYPE = 'int16'
 BUFFER_SIZE = SAMPLE_RATE * 1  # 1 second of audio, you can adjust the size
