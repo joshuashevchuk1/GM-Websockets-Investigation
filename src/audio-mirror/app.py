@@ -4,7 +4,7 @@ import numpy as np
 import sounddevice as sd
 
 # Audio settings — adjust if your audio format differs
-SAMPLE_RATE = 16000  # Hz
+SAMPLE_RATE = 4000  # Hz
 CHANNELS = 1
 DTYPE = 'int16'
 
