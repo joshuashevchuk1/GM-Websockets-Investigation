@@ -4,20 +4,24 @@ import numpy as np
 import sounddevice as sd
 
 # Audio settings — adjust if your audio format differs
-SAMPLE_RATE = 4000  # Hz
+SAMPLE_RATE = 44100 * 2  # Hz
 CHANNELS = 1
 DTYPE = 'int16'
+BUFFER_SIZE = SAMPLE_RATE * 1  # 1 second of audio, you can adjust the size
 
-async def playback(message):
-    await asyncio.sleep(5)  # 1 second delay before playback
+audio_buffer = []
 
-    # Convert raw bytes to numpy array
-    audio_array = np.frombuffer(message, dtype=DTYPE)
+async def playback():
+    # Combine all accumulated audio chunks
+    audio_array = np.concatenate(audio_buffer)
 
     # Playback audio using sounddevice
     print(f"[Playback] Playing audio ({len(audio_array)} samples)...")
     sd.play(audio_array, samplerate=SAMPLE_RATE)
     sd.wait()  # Wait for playback to finish
+
+    # Clear the buffer after playback
+    audio_buffer.clear()
 
 async def handle_audio(websocket):
     print("Client connected.")
@@ -25,8 +29,14 @@ async def handle_audio(websocket):
         async for message in websocket:
             print(f"Received batch of {len(message)} bytes")
 
-            # Start the playback task asynchronously
-            asyncio.create_task(playback(message))
+            # Convert raw bytes to numpy array and append to buffer
+            audio_array = np.frombuffer(message, dtype=DTYPE)
+            audio_buffer.append(audio_array)
+
+            # Check if buffer has enough data to start playback (e.g., after 1 second of audio)
+            if len(np.concatenate(audio_buffer)) >= BUFFER_SIZE:
+                # Start playback task asynchronously
+                asyncio.create_task(playback())
 
     except websockets.ConnectionClosed:
         print("Client disconnected.")
